@@ -1,0 +1,45 @@
+# OS and editor metadata
+.DS_Store
+._*
+*~
+*.swp
+.vscode/
+.idea/
+
+# Kernel/module build products
+*.o
+*.ko
+*.mod
+*.mod.c
+*.cmd
+*.o.d
+Module.symvers
+modules.order
+.tmp_versions/
+
+# User-space binaries
+memalloc
+test_encrypt
+tiered_alloc
+numa_benchmark
+client
+server
+a.out
+
+# Python and local environments
+__pycache__/
+*.py[cod]
+.venv/
+
+# Duplicate archives
+*.tar
+*.tar.gz
+*.tgz
+*.zip
+
+# New experiment output (preserved historical data lives under docs/)
+/memory-diagnostics/pagemap/latency_log_*.csv
+/memory-diagnostics/pagemap/pagemap_cdf_*.pdf
+/memory-diagnostics/page-walking/*_va.txt
+/extensions/tiered-memory/results.csv
+*.bin

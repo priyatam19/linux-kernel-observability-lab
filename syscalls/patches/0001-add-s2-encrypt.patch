@@ -1,0 +1,74 @@
+diff --git a/Makefile b/Makefile
+--- a/Makefile
++++ b/Makefile
+@@ -2,7 +2,7 @@
+ VERSION = 6
+ PATCHLEVEL = 12
+ SUBLEVEL = 0
+-EXTRAVERSION =
++EXTRAVERSION = -priyatam-annambhotla-lab
+ NAME = Baby Opossum Posse
+ 
+ # *DOCUMENTATION*
+diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
+--- a/arch/x86/entry/syscalls/syscall_64.tbl
++++ b/arch/x86/entry/syscalls/syscall_64.tbl
+@@ -431,3 +431,4 @@
+ 547	x32	pwritev2		compat_sys_pwritev64v2
+ # This is the end of the legacy x32 range.  Numbers 548 and above are
+ # not special and are not to be used for x32-specific syscalls.
++548	64	s2_encrypt		sys_s2_encrypt
+diff --git a/include/linux/syscalls.h b/include/linux/syscalls.h
+--- a/include/linux/syscalls.h
++++ b/include/linux/syscalls.h
+@@ -980,6 +980,7 @@
+ asmlinkage long sys_ioperm(unsigned long from, unsigned long num, int on);
+ 
+ asmlinkage long sys_uretprobe(void);
++asmlinkage long sys_s2_encrypt(const char __user *user_str, int key);
+ 
+ /* pciconfig: alpha, arm, arm64, ia64, sparc */
+ asmlinkage long sys_pciconfig_read(unsigned long bus, unsigned long dfn,
+diff --git a/kernel/Makefile b/kernel/Makefile
+--- a/kernel/Makefile
++++ b/kernel/Makefile
+@@ -50,6 +50,7 @@
+ obj-y += livepatch/
+ obj-y += dma/
+ obj-y += entry/
++obj-y += sys_s2_encrypt.o
+ obj-$(CONFIG_MODULES) += module/
+ 
+ obj-$(CONFIG_KCMP) += kcmp.o
+diff --git a/kernel/sys_s2_encrypt.c b/kernel/sys_s2_encrypt.c
+new file mode 100644
+--- /dev/null
++++ b/kernel/sys_s2_encrypt.c
+@@ -0,0 +1,27 @@
++// SPDX-License-Identifier: GPL-2.0
++/* Lab syscall maintained by Priyatam Annambhotla. Not cryptographic encryption. */
++#include <linux/errno.h>
++#include <linux/kernel.h>
++#include <linux/syscalls.h>
++#include <linux/uaccess.h>
++
++#define BUF_SIZE 256
++
++SYSCALL_DEFINE2(s2_encrypt, const char __user *, user_str, int, key)
++{
++	char buf[BUF_SIZE];
++	long len;
++	int i;
++
++	if (key < 1 || key > 5)
++		return -EINVAL;
++	len = strncpy_from_user(buf, user_str, sizeof(buf));
++	if (len < 0)
++		return len;
++	if (len >= sizeof(buf))
++		return -ENAMETOOLONG;
++	for (i = 0; i < len; i++)
++		buf[i] = (unsigned char)buf[i] + key;
++	pr_info("s2_encrypt: %s\n", buf);
++	return 0;
++}

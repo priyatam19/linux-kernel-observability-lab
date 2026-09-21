@@ -1,0 +1,4 @@
+[  160.153915] [lkp25p3] Module loaded. /proc/lkp25p3 ready.
+[  235.938904] [lkp25p3] Allocated 1GB buffer at 0000000034aa123d
+[  235.939365] [lkp25p3] Monitor thread started.
+[  235.940029] [lkp25p3] Monitoring thread started
